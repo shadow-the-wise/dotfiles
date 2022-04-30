@@ -1,7 +1,7 @@
 "==============================================================================
-" Version: 2.0
-" Author: shadow
-" Last Update: 28/4/2022
+" Version: 1.0
+" Author: Shadow
+" Last Update: Fri 3 sep, 2021
 " Neo Vim:
 "==============================================================================
 "
@@ -28,6 +28,9 @@
 
 " Load Plugins via plug
 runtime ./plug.vim
+
+" Load coc extensions
+runtime ./coc-install.vim
 
 " }}
 " setup {{{1
@@ -378,10 +381,54 @@ set pastetoggle=<F1>
 nnoremap <leader><TAB> :set et! list!<CR>
 
 " }}}
+" Completion {{{2
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Navigate snippet placeholders using tab
+let g:coc_snippet_next = '<Tab>'
+let g:coc_snippet_prev = '<S-Tab>'
+
+" Use enter to accept snippet expansion
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+
+" }}}
 " nerdtree {{{2
 " nnoremap <leader>x :NERDTreeToggle<CR>
 " }}}
+" coc {{{2
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" navigate diagnostics
+
+nmap <leader>rn <Plug>(coc-rename)
+
+" refactor and rename symbol
+nnoremap <silent>r <plug>(coc-refactor)
+
+nnoremap <silent> <leader>a :CocList diagnostics<cr>
+nnoremap <silent> <leader>o :CocList outline<cr>
+nnoremap <silent> <leader>s :CocList -I symbols<cr>
+
+" }}}
 " }}} end remaps
 " commands and functions {{{1
 " commands {{{2
@@ -398,6 +445,11 @@ command! Gqf GitGutterQuickFix | copen
 " }}}
 " Aug Commands {{{2
 if has("autocmd")
+" set spell {{{3
+" enable spell only if file type is normal text
+let spellable = ['md', 'markdown', 'gitcommit', 'txt', 'text']
+autocmd BufEnter * if index(spellable, &ft) < 0 | set nospell | else | set spell | endif
+" }}}
 " equal on resize {{{3
 " If the terminal frame is reduce or expanded keep the windows equal.
 au VimResized * :wincmd =
@@ -415,6 +467,13 @@ augroup line_return
 		\     execute 'normal! g`"zvzz' |
 		\ endif
 augroup END
+" }}}
+" nerdtree last window {{{3
+" Exit Vim if NERDTree is the only window left.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+" }}}
+" highlight symbols {{{3
+autocmd CursorHold * silent call CocActionAsync('highlight')
 " }}}
 " clear white space {{{3
 autocmd BufWritePre * :%s/\s\+$//e
@@ -483,7 +542,17 @@ nnoremap <leader>n :call NoteGreper()<cr>
 " }}}
 " }}}
 " vender plugins {{{1
+" coc {{{2
 
+" Map for document filetypes so the server could handle current document as
+" another filetype, ex:
+let g:coc_filetype_map = {
+                  \ 'html.erb': 'html',
+                  \ 'erb': 'html',
+                  \ 'eruby': 'html',
+                  \ }
+
+" }}}
 " Custom Highlights {{{2
 runtime ./colors/custom-highlight-colors.vim
 " }}}

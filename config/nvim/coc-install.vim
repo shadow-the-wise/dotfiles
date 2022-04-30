@@ -1,0 +1,14 @@
+" coc_global_extensions. These extensions will be installed on startup.
+let g:coc_global_extensions = [
+    \ 'coc-solargraph',
+    \ 'coc-json',
+    \ 'coc-html',
+    \ 'coc-yaml',
+    \ 'coc-css',
+    \ 'coc-snippets',
+    \ 'coc-pairs',
+    \ 'coc-highlight',
+    \ 'coc-explorer',
+    \ 'coc-diagnostic',
+    \ 'coc-markdownlint',
+  \ ]

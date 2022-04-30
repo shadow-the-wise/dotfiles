@@ -30,7 +30,6 @@ Plug 'Yggdroot/indentLine'
 " Snippets
 "------------------------------------------------------------------------------
 Plug 'honza/vim-snippets'
-Plug 'shadowchaser04/Colorizer'
 
 if has("nvim")
 
@@ -43,17 +42,12 @@ if has("nvim")
 "------------------------------------------------------------------------------
     " Solarized
     Plug 'overcache/NeoSolarized'
-    " Icons for telescope
-    Plug 'kyazdani42/nvim-web-devicons'
 "------------------------------------------------------------------------------
 "   Navigation
 "------------------------------------------------------------------------------
     Plug 'rhysd/clever-f.vim'
     Plug 'phaazon/hop.nvim'
-    Plug 'nvim-lua/plenary.nvim'
 
-    Plug 'shadowchaser04/project.nvim'
-    Plug 'nvim-telescope/telescope.nvim'
 "------------------------------------------------------------------------------
 "  Complation
 "------------------------------------------------------------------------------

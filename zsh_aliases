@@ -1,0 +1,211 @@
+#==============================================================================
+# Version: 2.0
+# Author: Shadow
+# Last Update: Saturday, 22 May, 2021,  3:53 PM
+#==============================================================================
+# Zsh Aliases
+#==============================================================================
+# globals {{{1
+
+alias -g G='| grep'
+alias -g C='| wc -l'
+alias -g H='| head'
+alias -g T='| tail'
+alias -g L="| less"
+alias -g N="| /dev/null"
+alias -g S='| sort'
+alias -g A='| awk'
+
+# }}}
+# ls {{{1
+#-------------------------------------------------------------------------------
+# List files/directories
+#-------------------------------------------------------------------------------
+# list dirs and dotfiles
+# l=list all information
+# A=loose the . / .. directories
+# s=sort by size but keep alphabetical order
+
+#alias l="ls -lAs"
+#alias l='colorls -lA --sd --gs'
+#alias ll='colorls -l --sd --gs'
+#alias tree='colorls --tree'
+alias l='ls -la'
+
+# }}}
+# Editor {{{1
+
+alias v="$EDITOR"                           # use the env var $EDITOR, vim
+alias vs="$EDITOR -S"                       # open as session
+
+# }}}
+# grep {{{1
+
+# color grep
+alias grep="grep --color=auto"
+
+# }}}
+# history {{{1
+
+# history
+alias history="history -i 1 -1"
+# history
+alias h="history"
+
+# }}}
+# Show/hide hidden files in Finder {{{1
+
+# opens finder in $PWD
+alias finder='open .'
+# reveal hidden files
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+# hide hidden files
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# }}}
+# Misc {{{1
+
+alias t="touch"                             # create a new file
+alias j="jobs -l"                           # jobs
+alias get="curl -O -L"                      # curl aliased to get
+alias rc="rails c"                          # rails console
+alias td="v $(find ~/.notes/todo.md)"       # todo
+alias za="v $(find ~/.zsh_aliases)"         # zsh aliases
+alias c_last="fc -l -1 | cut -d\  -f3- | pbcopy"    # copy last command to clip
+alias d_sizes="df -H"                        # show disc space
+
+# }}}
+# qutebrowser {{{1
+
+# qute browser
+alias qb="open /Applications/qutebrowser.app"
+
+# }}}
+# mpv {{{1
+
+alias m_plist="mpv ~/Downloads/Movies/**"
+alias m_audio="mpv ~/Music/YoutubeMusic/**"
+alias m_img="mpv ~/Downloads/Images/**"
+
+# }}}
+# suffix {{{1
+# text and programing
+alias -s txt="$EDITOR"
+alias -s md="$EDITOR"
+alias -s rb="$EDITOR"
+alias -s zsh="$EDITOR"
+alias -s sh="$EDITOR"
+alias -s vim="$EDITOR"
+alias -s erb="$EDITOR"
+
+# images
+alias -s png="open"
+alias -s jpg="open"
+alias -s tif="open"
+
+# music
+alias -s wav="open"
+alias -s m4a="open"
+
+# movie
+alias -s mp4="open"
+alias -s m4v="open"
+alias -s eac3="open"
+alias -s movi="open"
+alias -s caf="open"
+alias -s aiff="open"
+# }}}
+# dir stack {{{1
+#-------------------------------------------------------------------------------
+
+# print the stack.
+alias d='dirs -v | head -10'
+alias po='popd'
+alias pu='pushd'
+
+alias 1='cd +1'
+alias 2='cd +2'
+alias 3='cd +3'
+alias 4='cd +4'
+alias 5='cd +5'
+alias 6='cd +6'
+alias 7='cd +7'
+alias 8='cd +8'
+alias 9='cd +9'
+
+# }}}
+# counts and files {{{1
+
+alias wordy='wc -w * | sort '               # sort files in current directory by the number of words they contain
+alias du='du -h -c'                         # Calculate total disk usage for a folder
+alias topten="history | commands | sort -rn | head"
+alias dup="duplicates"                      # two file list dups
+alias ndup="nduplicate"                     # two file list none dups
+
+# alias tasks='grep --exclude-dir=.git -rEI "TODO|FIXME|NOTE" . 2>/dev/null'
+
+# }}}
+# git {{{1
+# main git {{{2
+alias g='git'
+# }}}
+# add, commit, status {{{2
+alias ga='g a'                          # git add changes
+alias gaa='g aa'                        # git add changes
+alias gs='g st'                         # git status
+alias gcm='g cm'                        # git commit -message
+alias gacm='g acm'                      # git add commit -message
+alias gu='g up'                         # pulls from remote, rebase local commits.
+# }}}
+# branches {{{2
+alias gco='g co'                        # git check out
+alias gcob='g cob'                      # git check out branch
+alias gcol='g col'                      # git check out last branch
+# }}}
+# display branches {{{2
+alias gbl='g bl'                        # git branch local
+alias gbr='g br'                        # git branch remote
+# }}}
+# push {{{2
+alias gp='g push'                       # git push
+alias gpm='g psuom'                     # git push -u origin master
+# }}}
+# log {{{2
+alias gl='g l'                          # git log short
+alias gll='g la'                        # git log long
+# }}}
+# status {{{2
+alias gn='g new'                        # git new commits
+alias gsh='g sh'                        # git show head additions and deletions
+# }}}
+# diff {{{2
+alias gd='g diff'                       # git diff
+# }}}
+# un {{{2
+alias gund='g undo'                     # git undo
+alias guns='g unstage'                  # git unstage
+alias gunc='g uncommit'                 # git unstage
+# }}}
+# update {{{2
+alias gru='g update'                    # git remote update - get remote comits
+# }}}
+# }}}
+# Ruby scripts {{{1
+
+alias ginit="ruby ~/.bin/Git-Scripts/git_init.rb"          # init a git repo local and remote
+alias lyric="ruby $HOME/.bin/lyrics.rb"                 # find lyrics
+alias remove-playlist="ruby $HOME/.bin/Download-Scripts/remove-playlist.rb"
+
+# }}}
+# resource {{{1
+
+alias vr="$EDITOR $HOME/.config/nvim/init.vim"
+alias zr="$EDITOR $HOME/.zshrc"
+
+# }}}
+# old function {{{1
+
+# update has been made into a function for formatting reasons
+# ~/.zsh/function/update
+
+# }}}

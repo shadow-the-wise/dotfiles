@@ -7,18 +7,33 @@
 #==============================================================================
 # Setopt {{{1
 
-#print -Pn "\e]0; %n@%M: %~\a"
-
+# AUTO_CD (-J)
+#
+# If a command is issued that can’t be executed as a normal command, and the
+# command is the name of a directory, perform the cd command to that directory.
+# This option is only applicable if the option SHIN_STDIN is set, i.e. if
+# commands are being read from standard input. The option is designed for
+# interactive use; it is recommended that cd be used explicitly in scripts to
+# avoid ambiguity.
+#
 # autocd without the cd command
 setopt autocd
+
 cdpath=(~)
 
 # automatically remove duplicates from these arrays
-#typeset -U path cdpath fpath manpath
+# typeset -U path cdpath fpath manpath
 
 # display PID when suspending processes as well
 setopt longlistjobs
 
+# RM_STAR_WAIT
+#
+# If querying the user before executing ‘rm *’ or ‘rm path/*’, first wait ten
+# seconds and ignore anything typed in that time. This avoids the problem of
+# reflexively answering ‘yes’ to the query when one didn’t really mean it. The
+# wait and query can always be avoided by expanding the ‘*’ in ZLE (with tab).
+#
 # if you do a 'rm *', Zsh will give you a sanity check!
 setopt rm_star_wait
 
@@ -26,32 +41,66 @@ setopt rm_star_wait
 # ** warning when this is turned on it kills cdr ** - get unmatched error?
 #setopt cshjunkiequotes
 
+# EXTENDED_GLOB
+#
+# Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename
+# generation, etc. (An initial unquoted ‘~’ always produces named directory
+# expansion.)
+#
 # complex pattern globbing
 setopt extendedglob
 
+# CDABLE_VARS (-T)
+#
 # If the argument to a cd command (or an implied cd with the AUTO_CD option set)
 # is not a directory, and does not begin with a slash, try to expand the expression
 # as if it were preceded by a ‘~’
+#
 setopt cdable_vars
 
-# any parameter that is set to the absolute name of a directory immediately
+# AUTO_NAME_DIRS
+#
+# Any parameter that is set to the absolute name of a directory immediately
 # becomes a name for that directory, that will be used by the ‘%~’ and related
-# prompt sequences, and will be available when completion is performed on a word starting with ‘~’.
+# prompt sequences, and will be available when completion is performed on a
+# word starting with ‘~’. (Otherwise, the parameter must be used in the form
+# ‘~param’ first.)
+#
 setopt auto_name_dirs
 
-# piping to files works normaly
+# CLOBBER (+C, ksh: +C) <D>
+#
+# Allows ‘>’ redirection to truncate existing files. Otherwise ‘>!’ or ‘>|’
+# must be used to truncate a file.
+#
+# If the option is not set, and the option APPEND_CREATE is also not set, ‘>>!’
+# or ‘>>|’ must be used to create a file. If either option is set, ‘>>’ may be
+# used.
+#
+# make piping to files works normaly
 setopt clobber
 
 # This causes the menu completion display to include characters indicating the
 # types of the items (symbolic links, executables, etc.)
 setopt listtypes
 
-# automatically list choices on ambiguous completion
+# AUTO_LIST (-9) <D>
+#
+# Automatically list choices on an ambiguous completion.
+#
 setopt auto_list
 
-# complete aliases
+# COMPLETE_ALIASES
+#
+# Prevents aliases on the command line from being internally substituted before
+# completion is attempted. The effect is to make the alias a distinct command
+# for completion purposes.
+#
 setopt COMPLETE_ALIASES
 
+# HUP <Z>
+# Send the HUP signal to running jobs when the shell exits.
+#
 # do not kill running jobs when shell exits
 unsetopt hup
 
@@ -189,28 +238,116 @@ HIST_STAMPS="dd/mm/yyyy"
 HISTFILE="$HOME/.cache/zsh/zsh_history.txt"
 HISTORY_IGNORE="(pwd|less *|l[alsh]#( *)#|[bf]g *|exit|reset|clear)"
 
+# APPEND_HISTORY <D>
+#
+# If this is set, zsh sessions will append their history list to the history
+# file, rather than replace it. Thus, multiple parallel zsh sessions will all
+# have the new entries from their history lists added to the history file, in
+# the order that they exit. The file will still be periodically re-written to
+# trim it when the number of lines grows 20% beyond the value specified by
+# $SAVEHIST.
+#
 # Allow multiple terminal sessions to all append to one zsh command history
 setopt APPEND_HISTORY
+
+# SHARE_HISTORY <K>
+#
+# This option both imports new commands from the history file, and also causes
+# your typed commands to be appended to the history file (the latter is like
+# specifying INC_APPEND_HISTORY, which should be turned off if this option is
+# in effect). The history lines are also output with timestamps ala
+# EXTENDED_HISTORY (which makes it easier to find the spot where we left off
+# reading the file after it gets re-written).
+
+# By default, history movement commands visit the imported lines as well as the
+# local lines, but you can toggle this on and off with the set-local-history
+# zle binding. It is also possible to create a zle widget that will make some
+# commands ignore imported commands, and some include them.
+
+# If you find that you want more control over when commands get imported, you
+# may wish to turn SHARE_HISTORY off, INC_APPEND_HISTORY or
+# INC_APPEND_HISTORY_TIME (see above) on, and then manually import
+#
 # Imports new commands and appends typed commands to history
 setopt SHARE_HISTORY
+
+# EXTENDED_HISTORY <C>
+#
+# Save each command’s beginning timestamp (in seconds since the epoch) and the
+# duration (in seconds) to the history file. The format of this prefixed data
+# is:
+#
+# ‘: <beginning time>:<elapsed seconds>;<command>’.
+#
 # Save timestamp of command and duration
 setopt EXTENDED_HISTORY
 
+# INC_APPEND_HISTORY
+#
+# This option works like APPEND_HISTORY except that new history lines are added
+# to the $HISTFILE incrementally (as soon as they are entered), rather than
+# waiting until the shell exits. The file will still be periodically re-written
+# to trim it when the number of lines grows 20% beyond the value specified by
+# $SAVEHIST (see also the HIST_SAVE_BY_COPY option).
+#
 # Add comamnds as they are typed, don't wait until shell exit
 setopt INC_APPEND_HISTORY
-# Perform textual history expansion, treating the character ‘!’ specially.
+
+
+# BANG_HIST (+K) <C> <Z>
+#
+# Perform textual history expansion, csh-style, treating the character ‘!’
+# specially.
+#
 setopt BANG_HIST
 
-# Do not write events to history that are duplicates of previous events
+# HIST_IGNORE_ALL_DUPS
+#
+# If a new command line being added to the history list duplicates an older
+# one, the older command is removed from the list (even if it is not the
+# previous event).
+#
 setopt HIST_IGNORE_ALL_DUPS
+
+# HIST_EXPIRE_DUPS_FIRST
+#
+# If the internal history needs to be trimmed to add the current command line,
+# setting this option will cause the oldest history event that has a duplicate
+# to be lost before losing a unique event from the list. You should be sure to
+# set the value of HISTSIZE to a larger number than SAVEHIST in order to give
+# you some room for the duplicated events, otherwise this option will behave
+# just like HIST_IGNORE_ALL_DUPS once the history fills up with unique events.
+#
 # This will cause the oldest history duplicate to be lost
 setopt HIST_EXPIRE_DUPS_FIRST
+
+# HIST_FIND_NO_DUPS
+#
+# When searching for history entries in the line editor, do not display
+# duplicates of a line previously found, even if the duplicates are not
+# contiguous.
+#
 # When searching history don't display results already cycled through twice
 setopt HIST_FIND_NO_DUPS
 
+# HIST_IGNORE_SPACE (-g)
+#
+# Remove command lines from the history list when the first character on the
+# line is a space, or when one of the expanded aliases contains a leading
+# space. Only normal aliases (not global or suffix aliases) have this
+# behaviour. Note that the command lingers in the internal history until the
+# next command is entered before it vanishes, allowing you to briefly reuse or
+# edit the line. If you want to make it vanish right away without entering
+# another command, type a space and press return.
+#
 # Remove from history list when first character on the line is a space
 setopt HIST_IGNORE_SPACE
-# Remove extra blanks from each command line being added to history
+
+# HIST_REDUCE_BLANKS
+#
+# Remove superfluous blanks from each command line being added to the history
+# list.
+#
 setopt HIST_REDUCE_BLANKS
 
 # Don't execute, just expand history: append :p to print the command without running it
@@ -220,7 +357,13 @@ setopt HIST_REDUCE_BLANKS
 # Dir Stack {{{1
 autoload -Uz add-zsh-hook
 
+# DIRSTACKFILE
+#
+# configure the dirstack file location
+#
 DIRSTACKFILE="$HOME/.cache/zsh/recent_dirs.txt"
+
+# Eval if the DIRSTACKFILE exists and add the new dir change to it
 if [[ -f "$DIRSTACKFILE" ]] && (( ${#dirstack} == 0 )); then
 	dirstack=("${(@f)"$(< "$DIRSTACKFILE")"}")
 	[[ -d "${dirstack[1]}" ]] && cd -- "${dirstack[1]}"
@@ -228,20 +371,59 @@ fi
 chpwd_dirstack() {
 	print -l -- "$PWD" "${(u)dirstack[@]}" > "$DIRSTACKFILE"
 }
+
+# zsh builtins
+#
+# use zsh builtin chpwd (change present working directory) and on dir change
+# call the function chpwd_dirstack()
+#
 add-zsh-hook -Uz chpwd chpwd_dirstack
 
 DIRSTACKSIZE='50'
 
+# AUTO_PUSHD
+#
+# push cd dirs to the dir stack automatically
+#
+# PUSHD_SILENT
+#
+# do not print the pushed dirs to the screen
+#
+# PUSHD_TO_HOME
+#
 setopt AUTO_PUSHD PUSHD_SILENT PUSHD_TO_HOME
 
-## Remove duplicate entries
+# PUSHD_IGNORE_DUPS
+#
+# Remove duplicate entries
+#
 setopt PUSHD_IGNORE_DUPS
 
 ## This reverts the +/- operators.
 #setopt PUSHD_MINUS
+
 #}}}
 # Functions {{{1
 
+# fpath
+#
+# autoload
+#
+# The 4.2.6/functions directory contains functions shipped with zsh 4.2.6. The
+# site-functions directory contains functions that are added by third-party
+# packages or by the local administrator; under Linux the local administrator
+# would usually use a site-functions directory under /usr/local
+#
+# autoload USER defined functioned directory and files and add them to the fpath
+# (functions path)
+#
+# autoload tells zsh to look for a file in $FPATH/$fpath containing a function
+# definition, instead of a file in $PATH/$path containing an executable script
+# or binary.
+#
+# This means that when a function is autoloaded, the corresponding file is
+# merely executed, and must define the function itself.
+#
 # functions autoload and add to functions path
 autoload -U $HOME/.zsh/functions/*(:t)
 fpath=($ZSH/functions/ $fpath)
@@ -295,21 +477,21 @@ zstyle ':autocomplete:*' fzf-completion no
 zstyle ':autocomplete:*' add-space \
     executables aliases functions builtins reserved-words commands
 
-source ~/.zsh/lib/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+# source ~/.zsh/lib/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
 bindkey $key[Up] up-line-or-search
 # up-line-or-search:  Open history menu.
 # up-line-or-history: Cycle to previous history line.
 
-bindkey $key[Down] down-line-or-select
+# bindkey $key[Down] down-line-or-select
 # down-line-or-select:  Open completion menu.
 # down-line-or-history: Cycle to next history line.
 
-bindkey $key[Control-Space] list-expand
+# bindkey $key[Control-Space] list-expand
 # list-expand:      Reveal hidden completions.
 # set-mark-command: Activate text selection.
 
-bindkey -M menuselect $key[Return] .accept-line
+# bindkey -M menuselect $key[Return] .accept-line
 # .accept-line: Accept command line.
 # accept-line:  Accept selection and exit menu.
 
@@ -318,73 +500,6 @@ bindkey -M menuselect $key[Return] .accept-line
 # zle -A {.,}history-incremental-search-backward
 
 # }}}
-# Auto Comp {{{1
-
-##setopt complete_aliases
-#setopt COMPLETE_ALIASES
-
-## This is needed for the prefix completer
-##setopt COMPLETE_IN_WORD
-
-## move the cursor to the end AFTER a completion was inserted
-#setopt ALWAYS_TO_END
-
-## make dir if it doenst exist.
-#[[ -d $HOME/.cache/zsh ]] || mkdir -p $HOME/.cache/zsh
-
-#autoload -Uz compinit && compinit -u
-
-## If an ambiguous completion produces at least <NUM> possibilities, # menu
-## selection is started.
-#zstyle ':completion:*' use-perl true
-#zstyle ':completion:*' menu yes select
-#zstyle ':completion:*' force-list always
-#zstyle ':completion:*' add-space true
-#zstyle ':completion:*' verbose yes
-#zstyle ':completion:*' remove-all-dups true     # remove all dups
-#zstyle ':completion:*' squeeze-slashes true     # remove trailing slash
-#zstyle ':completion:*:commands' rehash true     # rehash on commands
-
-## When looking for matches, first try exact matches, then case-insensiive, then
-## partial word completion.
-#zstyle ':completion:*' completer _expand _complete _match _ignored _correct
-#zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|[._-]=* r:|=*'
-#zstyle ':completion:*' list-colors '=(#b) #([0-9]#)*( *[a-z])*=34=31=33'
-#zstyle ':completion:*' file-list all            # list
-
-#zstyle ':completion:*' glob 0
-#zstyle ':completion:*' substitute 0
-#zstyle ':completion:*' max-errors 2 numeric     # allow for 2 numeric errors
-#zstyle ':completion:*' group-name ''            # group results by category
-
-##zstyle ':completion:*:cd:*' menu yes select
-#zstyle ':completion:*:cd:*' ignore-parents parent pwd
-#zstyle ':completion:*:*:cd:*' tag-order local-directories path-directories
-
-## Enable history menu selection
-#zstyle ':completion:*:history-words' remove-all-dups yes
-#zstyle ':completion:*:history-words' stop yes
-
-## Show nice warning when nothing matched
-#zstyle ':completion:*:warnings' format '%F{red}%No matches:%F{white} %d%b'
-#zstyle ':completion:*:descriptions' format "%U%B%F{yellow}» %d%u%b%f"
-#zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
-
-## Enable processes completion for all user processes
-#zstyle ':completion:*:processes' command 'ps -au$USER'
-##------------------------------------------------------------------------------
-## ignore
-##------------------------------------------------------------------------------
-## Don't complete backup files as commands.
-#zstyle ':completion:*:complete:-command-::*' ignored-patterns '*\~'
-
-## Prevent completion of functions for commands you don't have
-#zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-
-## Prevent commands like rm
-#zstyle ':completion:*:rm:*' ignore-line yes
-
-#}}}
 # Switch Term {{{1
 
 # switch between term and vim (start v first)
@@ -395,25 +510,6 @@ zle -N foreground-vi
 bindkey '^Z' foreground-vi
 
 # }}}
-# Vimmode {{{1
-#-------------------------------------------------------------------------------
-bindkey -v
-
-# # search for word being typed, option x or z
-# bindkey "≈" history-beginning-search-backward
-# bindkey "Ω" history-beginning-search-forward
-# # arrow keys do the same
-# bindkey "^[[A" history-beginning-search-backward
-# bindkey "^[[B" history-beginning-search-forward
-
-# # in command mode seach history on the home row
-# bindkey -M vicmd 'j' history-beginning-search-forward
-# bindkey -M vicmd 'k' history-beginning-search-backward
-
-# # delete rerun commands
-# bindkey '^?' backward-delete-char
-
-#}}}
 # rbenv {{{1
 #
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
@@ -429,7 +525,6 @@ eval "$(rbenv init -)"
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#4b4b4b'
 
-# ZSH_AUTOSUGGEST_USE_ASYNC
 # }}}
 # colorls {{{1
 
@@ -438,21 +533,16 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#4b4b4b'
 
 # Source {{{1
 #-------------------------------------------------------------------------------
+# brew installed zsh autosugestion
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# brew installed zsh highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 # git username and tokens
 source $HOME/.env
 
 # source aliases
 source $HOME/.zsh_aliases
-
-# auto suggestions are in a dir and need an added layer to the .zsh source
-source $HOME/.dotfiles/zsh/lib/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# syntax highlightings is a dir and needs an added layer to the .zsh source
-source $HOME/.dotfiles/zsh/lib/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# libriary
-for config_file ($ZSH/lib/*.zsh); do
-  source $config_file
-done
 
 # }}}

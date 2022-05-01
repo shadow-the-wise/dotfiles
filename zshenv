@@ -21,6 +21,12 @@ export HOSTTYPE
 # Add mysql to the path
 export PATH="${PATH:+${PATH}:}$HOME/.bin:/usr/local/bin"
 
+# brew installed node@16
+export PATH="${PATH:+${PATH}:}/usr/local/opt/node@16/bin"
+
+# brew installed python3.10
+export PATH="${PATH:+${PATH}:}/usr/local/opt/python@3.10/bin"
+
 # Add neovim
 #export PATH="${PATH:+${PATH}:}/usr/local/opt/neovim"
 

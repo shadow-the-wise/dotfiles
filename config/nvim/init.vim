@@ -25,15 +25,60 @@
 
 "==============================================================================
 " plugins {{{1
+" runtime {{{2
 
-" Load Plugins via plug
+" runtime
+" :ru[ntime][!] [where] {file} ..
+"
+"   Sources |Ex| commands or Lua code (".lua" files) read
+"   from {file} (a relative path) in each directory given
+"   by 'runtimepath' and/or 'packpath'.
+"   Ignores non-existing files.
+"       Example: >
+"       :runtime syntax/c.vim
+"           :runtime syntax/c.lua
+"
+"   There can be multiple space-separated {file}
+"   arguments. Each {file} is searched for in the first
+"   directory from 'runtimepath', then in the second
+"   directory, etc.
+"       When [!] is included, all found files are sourced.
+"           Else only the first found file is sourced.
+
+" source plug.vim file
 runtime ./plug.vim
 
-" Load coc extensions
+" source coc-install.vim
 runtime ./coc-install.vim
 
+" }}}
+" auto install plugins {{{2
+
+call plug#end()
+
+" Automatically install missing plugins on startup
+autocmd VimEnter *
+  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \|   PlugInstall --sync | q
+  \| endif
+
+" }}}
+" hop require {{{2
+
+" hop plugin load
+lua << EOF
+require'hop'.setup()
+EOF
+
+" }}}
 " }}
-" setup {{{1
+" lang providers {{{1
+
+" disable python 3
+let g:loaded_python3_provider = 0
+
+" }}}
+" filetype and syntax {{{1
 " make sure user defined tabs and indent are respected
 filetype indent off
 filetype plugin on
@@ -478,6 +523,15 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " clear white space {{{3
 autocmd BufWritePre * :%s/\s\+$//e
 " }}}
+" highlight yank {{{3
+
+" highlight lines yanked
+augroup highlight_yank
+  autocmd!
+  autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+augroup END
+
+" }}}
 endif " has("autocmd")
 " }}}
 " }}}
@@ -574,5 +628,4 @@ let g:indentLine_fileTypeExclude = ['text', 'txt', 'md', 'markdown', 'sh']
 " }}}
 " }}}
 "==============================================================================
-let g:colorizer_auto_filetype='css'
-let g:colorizer_skip_comments = 1
+"

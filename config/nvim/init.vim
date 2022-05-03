@@ -1,9 +1,9 @@
-"==============================================================================
+"==================================================================================
 " Version: 1.0
 " Author: Shadow
 " Last Update: Fri 3 sep, 2021
 " Neo Vim:
-"==============================================================================
+"==================================================================================
 "
 "    .o oOOOOOOOo                                       .....0OOOo
 "    Ob.OOOOOOOo  OOOo.      oOOo.              ....oooooOOOOOOOOO
@@ -23,7 +23,7 @@
 "    .                  .      O"          : o     .
 
 
-"==============================================================================
+"==================================================================================
 " plugins {{{1
 " runtime {{{2
 
@@ -63,7 +63,7 @@ autocmd VimEnter *
   \| endif
 
 " }}}
-" hop require {{{2
+" requires {{{2
 
 " hop plugin load
 lua << EOF
@@ -83,7 +83,8 @@ let g:loaded_python3_provider = 0
 filetype indent off
 filetype plugin on
 syntax enable
-
+" }}}
+" basic setup {{{1
 " Colorscheme {{{2
 
 syntax enable
@@ -96,14 +97,17 @@ endif
 
 " }}}
 " Leader {{{2
-"------------------------------------------------------------------------------
-" leader
+
+"The "Leader key" is a way of extending the power of VIM's shortcuts by using sequences of keys to
+"perform a command.
 let g:mapleader = "\<Space>"
 
 " }}}
 " splash screen {{{2
+
 " splash screen at the start
 set shortmess+=I
+
 " }}}
 " backspace {{{2
 " make delete work sanely
@@ -116,7 +120,8 @@ set relativenumber
 " cursor line {{{2
 set cursorline
 " }}}
-" text and column width {{{2
+" }}}
+" text and column width {{{1
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
@@ -129,15 +134,16 @@ endif
 
 set updatetime=100
 
+" echo winwidth(0) to get the length of the screen and devide by 2
 " Text width 79 if colorcolumn is set to 1 and there is no colorcolumn join.
 " Text width 80 if there is no colorcolumn set to 1
-set textwidth=79
+set textwidth=101
 
 " Set the column at the 80 +1 after textwidth
 set colorcolumn=+1
 
 "}}}
-" command line {{{2
+" command line {{{1
 
 " Height of the command bar.
 set cmdheight=1
@@ -154,7 +160,6 @@ set modelines=5
 set ruler
 
 "}}}
-" }}} end setup
 " navigation {{{1
 " change CWD {{{2
 "
@@ -287,7 +292,7 @@ set fillchars=fold:━
 function! MyFoldText()
 	let line = getline(v:foldstart)
 	let foldedlinecount = v:foldend - v:foldstart
-	let separator = 80 - len(line)
+	let separator = 102 - len(line)
 
 	let line_end = foldedlinecount . ' ━ lines │ depth '
 	let line_separator = repeat('─', separator - len(line_end)+4)
@@ -308,6 +313,9 @@ set foldtext=MyFoldText()
 set complete+=kspell
 set dictionary+=/usr/share/dict/words
 
+" set spell file location
+set spellfile=~/.config/nvim/spell/custom-dictionary.utf-8.add
+
 " }}}
 " }}} end formatting
 " History, ignore and tags {{{1
@@ -319,7 +327,8 @@ if !isdirectory(&undodir) | call mkdir(&undodir, "p") | endif
 let &undodir = expand('~/.config/nvim/undo//')
 " }}}
 " swap {{{2
-set noswapfile                    " it's 2013, Vim.
+" it's 2013, Vim.
+set noswapfile
 let &directory = expand('~/.config/nvim/swap//')
 if !isdirectory(&directory) | call mkdir(&directory, "p") | endif
 " }}}
@@ -344,15 +353,17 @@ set wildignore+=*/node_modules/*,_site,*/__pycache__/,*/venv/*,*/target/*
 set wildignore+=*/.vim$,\~$,*/.log,*/.aux,*/.cls,*/.aux,*/.bbl,*/.blg,*/.fls
 set wildignore+=*/.fdb*/,*/.toc,*/.out,*/.glo,*/.log,*/.ist,*/.fdb_latexmk
 
-
-
 "}}}
 " tags {{{2
+
 " This will check the current folder for tags file and keep going one directory
 " up all the way to the root folder. So you can be in any sub-folder in your
 " project and it'll be able to find the tags files.
 set tags=tags;/
+
 " }}}
+" spell
+
 "}}} end history
 " Remaps {{{1
 " navigation {{{2
@@ -474,6 +485,22 @@ nnoremap <silent> <leader>o :CocList outline<cr>
 nnoremap <silent> <leader>s :CocList -I symbols<cr>
 
 " }}}
+" multi cursor {{{2
+
+" press control d to add the word to multicursor word for renameing
+nmap <expr> <silent> <C-d> <SID>select_current_word()
+function! s:select_current_word()
+  if !get(b:, 'coc_cursors_activated', 0)
+    return "\<Plug>(coc-cursors-word)"
+  endif
+  return "*\<Plug>(coc-cursors-word):nohlsearch\<CR>"
+endfunc
+
+" press control c in normal mode to highlight all words under the cursor and use change word to
+" rename
+noremap <C-c> :CocCommand document.renameCurrentWord<cr>
+
+" }}}
 " }}} end remaps
 " commands and functions {{{1
 " commands {{{2
@@ -518,6 +545,8 @@ augroup END
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 " }}}
 " highlight symbols {{{3
+
+" highlight all matching words under the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 " }}}
 " clear white space {{{3
@@ -627,5 +656,4 @@ let g:indentLine_fileTypeExclude = ['text', 'txt', 'md', 'markdown', 'sh']
 
 " }}}
 " }}}
-"==============================================================================
-"
+"==================================================================================

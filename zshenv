@@ -1,11 +1,7 @@
 #==============================================================================
 # Zsh Env
 #==============================================================================
-# Export {{{1
-
-#------------------------------------------------------------------------------
-# host
-#------------------------------------------------------------------------------
+# hosttype {{{1
 
 # HOSTTYPE = { Linux | darwin | etc. }
 if which uname &>/dev/null; then
@@ -18,14 +14,23 @@ export HOSTTYPE
 # }}}
 # path {{{1
 
-# Add mysql to the path
-export PATH="${PATH:+${PATH}:}$HOME/.bin:/usr/local/bin"
+# Validate .bin directory exists
+if [[ -d "$HOME/.bin" ]]; then
+    export PATH="${PATH:+${PATH}:}$HOME/.bin:/usr/local/bin"
+fi
 
-# brew installed node@16
-export PATH="${PATH:+${PATH}:}/usr/local/opt/node@16/bin"
 
-# brew installed python3.10
-export PATH="${PATH:+${PATH}:}/usr/local/opt/python@3.10/bin"
+# Validate node@16 directory exists
+if [[ -d "/usr/local/opt/node@16" ]]; then
+    # brew installed node@16
+    export PATH="${PATH:+${PATH}:}/usr/local/opt/node@16/bin"
+fi
+
+# Validate python3.10 directory exists
+if [[ -d "/usr/local/opt/python@3.10" ]]; then
+    # brew installed python3.10
+    export PATH="${PATH:+${PATH}:}/usr/local/opt/python@3.10/bin"
+fi
 
 # Add neovim
 #export PATH="${PATH:+${PATH}:}/usr/local/opt/neovim"
@@ -38,6 +43,7 @@ export LANG='en_US.UTF-8'
 # }}}
 # zsh {{{1
 
+# zsh user home directory
 export ZSH=$HOME/.zsh
 
 # }}}
@@ -97,15 +103,8 @@ fi
 # manpage {{{1
 
 # man page piped to vim
-# export MANPAGER="/bin/sh -c \"sed -e 's/.$(echo -e '\010')//g' | vim -R -c 'set ft=man nomod nolist' -\""
 export MANPAGER='nvim +Man!'
 export MANWIDTH=999
-
-# }}}
-# nerdtree {{{1
-
-# Nerdtree bookmarks
-# export NERDTREE_BOOKMARKS=$HOME/.cache/nerdtree/NerdTreeBookmarks
 
 # }}}
 # mpv home {{{1

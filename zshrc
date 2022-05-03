@@ -21,6 +21,8 @@ setopt autocd
 
 cdpath=(~)
 
+# LONGLISTJOBS
+#
 # automatically remove duplicates from these arrays
 # typeset -U path cdpath fpath manpath
 
@@ -36,10 +38,6 @@ setopt longlistjobs
 #
 # if you do a 'rm *', Zsh will give you a sanity check!
 setopt rm_star_wait
-
-# No unmatched quotes
-# ** warning when this is turned on it kills cdr ** - get unmatched error?
-#setopt cshjunkiequotes
 
 # EXTENDED_GLOB
 #
@@ -80,8 +78,11 @@ setopt auto_name_dirs
 # make piping to files works normaly
 setopt clobber
 
+# LISTTYPES
+#
 # This causes the menu completion display to include characters indicating the
 # types of the items (symbolic links, executables, etc.)
+#
 setopt listtypes
 
 # AUTO_LIST (-9) <D>
@@ -99,6 +100,7 @@ setopt auto_list
 setopt COMPLETE_ALIASES
 
 # HUP <Z>
+#
 # Send the HUP signal to running jobs when the shell exits.
 #
 # do not kill running jobs when shell exits
@@ -511,14 +513,20 @@ bindkey '^Z' foreground-vi
 
 # }}}
 # rbenv {{{1
+
 #
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 # Set up rbenv in your shell
 eval "$(rbenv init -)"
-#
+
 #}}}
 # zsh autosuggestions {{{1
+
+# brew installed zsh autosugestion
+if [[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+    source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
 
 # Will first try to find a suggestion from your history, but, if it can't find
 # a match, will find a suggestion from the completion engine.
@@ -526,21 +534,13 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#4b4b4b'
 
 # }}}
-# colorls {{{1
-
-# Enable tab completion for flags by entering following line to your shell configuration file
-# source $(dirname $(gem which colorls))/tab_complete.sh
-
 # Source {{{1
 #-------------------------------------------------------------------------------
-# brew installed zsh autosugestion
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # brew installed zsh highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# git username and tokens
-source $HOME/.env
+if [[ -f $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # source aliases
 source $HOME/.zsh_aliases

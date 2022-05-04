@@ -1,9 +1,8 @@
-"==================================================================================
 " Version: 1.0
 " Author: Shadow
 " Last Update: Fri 3 sep, 2021
 " Neo Vim:
-"==================================================================================
+"=================================================================================
 "
 "    .o oOOOOOOOo                                       .....0OOOo
 "    Ob.OOOOOOOo  OOOo.      oOOo.              ....oooooOOOOOOOOO
@@ -23,27 +22,18 @@
 "    .                  .      O"          : o     .
 
 
-"==================================================================================
+"=================================================================================
 " plugins {{{1
 " runtime {{{2
 
 " runtime
 " :ru[ntime][!] [where] {file} ..
 "
-"   Sources |Ex| commands or Lua code (".lua" files) read
-"   from {file} (a relative path) in each directory given
-"   by 'runtimepath' and/or 'packpath'.
-"   Ignores non-existing files.
-"       Example: >
-"       :runtime syntax/c.vim
-"           :runtime syntax/c.lua
-"
-"   There can be multiple space-separated {file}
-"   arguments. Each {file} is searched for in the first
-"   directory from 'runtimepath', then in the second
-"   directory, etc.
-"       When [!] is included, all found files are sourced.
-"           Else only the first found file is sourced.
+"   Sources |Ex| commands or Lua code (".lua" files) read from {file} (a relative path) in each
+"   directory given by 'runtimepath' and/or 'packpath'. There can be multiple space-separated {file}
+"   arguments. Each {file} is searched for in the first directory from 'runtimepath', then in the
+"   second directory, etc. When [!] is included, all found files are sourced. Else only the first
+"   found file is sourced.
 
 " source plug.vim file
 runtime ./plug.vim
@@ -73,10 +63,13 @@ EOF
 " }}}
 " }}
 " lang providers {{{1
-
+" python {{{2
 " disable python 3
 let g:loaded_python3_provider = 0
+" }}}
+" ruby {{{2
 
+" }}}
 " }}}
 " filetype and syntax {{{1
 " make sure user defined tabs and indent are respected
@@ -502,7 +495,7 @@ noremap <C-c> :CocCommand document.renameCurrentWord<cr>
 
 " }}}
 " }}} end remaps
-" commands and functions {{{1
+" commands and aug commands {{{1
 " commands {{{2
 
 command! -nargs=1 Fold :set foldlevel=<args>
@@ -540,10 +533,6 @@ augroup line_return
 		\ endif
 augroup END
 " }}}
-" nerdtree last window {{{3
-" Exit Vim if NERDTree is the only window left.
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
-" }}}
 " highlight symbols {{{3
 
 " highlight all matching words under the cursor
@@ -561,7 +550,12 @@ augroup highlight_yank
 augroup END
 
 " }}}
+" set highlight insert line {{{3
+" set color of line
+autocmd InsertEnter * set cul
+autocmd InsertLeave * set nocul
 endif " has("autocmd")
+" }}}
 " }}}
 " }}}
 " functions {{{2
@@ -637,23 +631,82 @@ let g:coc_filetype_map = {
 
 " }}}
 " Custom Highlights {{{2
+" set runtimepath+=$HOME/.config/nvim/colors
 runtime ./colors/custom-highlight-colors.vim
+
 " }}}
 " indentLine {{{2
+
+" conceallevel
+"
+" 0	    Text is shown normally
+" 1	    Each block of concealed text is replaced with one character.  If the syntax item does not
+"       have a custom replacement character defined (see |:syn-cchar|) the character defined in
+"       'listchars' is used. It is highlighted with the "Conceal" highlight group.
+" 2	    Concealed text is completely hidden unless it has a custom replacement character defined.
+" 3	    Concealed text is completely hidden.
+"
 " set this so we wont break indentation plugin
 set conceallevel=2
-" indentLine
-let g:indentLine_enabled = 1
-let g:indentLine_char_list = ['▏', '¦', '┆', '┊']
-let g:indentLine_setColors = 0
-let g:indentLine_setConceal = 0
 
-" When opening these types of files, the plugin is enabled by default.
+" indentLine_enabled
+"
+" Specify whether to enable indentLine plugin by default. If value is not 0, the plugin is on by
+" default, otherwise off. Default value is 1.
+let g:indentLine_enabled = 1
+
+" indentLine_char_list
+"
+" Specify a list of characters to be used as indent line for each indent level. If the value is an
+" empty list [], use |g:indentLine_char| instead. e.g., let g:indentLine_char_list = ['|', '¦', '┆',
+" '┊'] Default value is [].
+let g:indentLine_char_list = ['▏', '¦', '┆', '┊']
+
+" indentLine_color_term
+"
+" Specify terminal vim indent line color. e.g.  let g:indentLine_color_term = 239
+let g:indentLine_color_term = 239
+
+" indentLine_indentLevel
+"
+" Specify how much indent level do you want to use for indentLine. Most program will not has bigger
+" indent level than 10. Default value is 10.
+let g:indentLine_indentLevel = 5
+
+" indentLine_setColors
+"
+" By default, indentLine will overwrite 'conceal' color. If you want to highlight conceal with your
+" colorscheme, set this value to 0. Default value is 1.
+let g:indentLine_setColors = 0
+
+" indentLine_fileType
+"
+" This variable specify a list of file types. When opening these types of files, the plugin is
+" enabled by default. e.g. let g:indentLine_fileType = ['c', 'cpp'] Default value is [] which means
+" all file types is supported.
 let g:indentLine_fileType = ['json', 'html', 'ruby', 'rb', 'eruby', 'erb', 'css', 'scss', 'py']
 
-" Exclue filetypes
+" indentLine_fileTypeExclude
+"
+" This variable specify a list of file types. When opening these types of files, the plugin is
+" disabled by default. e.g. let g:indentLine_fileTypeExclude = ['text', 'sh'] Default value is []
+" which means no file types are excluded.
 let g:indentLine_fileTypeExclude = ['text', 'txt', 'md', 'markdown', 'sh']
 
 " }}}
 " }}}
-"==================================================================================
+"=================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+

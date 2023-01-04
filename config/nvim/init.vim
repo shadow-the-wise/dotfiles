@@ -2,7 +2,7 @@
 " Author: Shadow
 " Last Update: Fri 3 sep, 2021
 " Neo Vim:
-"=================================================================================
+"==============================================================================
 "
 "    .o oOOOOOOOo                                       .....0OOOo
 "    Ob.OOOOOOOo  OOOo.      oOOo.              ....oooooOOOOOOOOO
@@ -22,7 +22,7 @@
 "    .                  .      O"          : o     .
 
 
-"=================================================================================
+"==============================================================================
 " plugins {{{1
 " runtime {{{2
 
@@ -41,6 +41,9 @@ runtime ./plug.vim
 " source coc-install.vim
 runtime ./coc-install.vim
 
+" Custom abbreviations for vim
+runtime ./abbrev.vim
+
 " }}}
 " auto install plugins {{{2
 
@@ -53,9 +56,8 @@ autocmd VimEnter *
   \| endif
 
 " }}}
-" requires {{{2
+" lua requires {{{2
 
-" hop plugin load
 lua << EOF
 require'hop'.setup()
 EOF
@@ -71,16 +73,26 @@ let g:loaded_python3_provider = 0
 
 " }}}
 " }}}
-" filetype and syntax {{{1
+" filetype, syntax and conceal {{{1
 " make sure user defined tabs and indent are respected
 filetype indent off
 filetype plugin on
 syntax enable
+
+" Concealed text is completely hidden unless it has a custom replacement character defined
+set conceallevel=2
 " }}}
 " basic setup {{{1
 " Colorscheme {{{2
 
+" This command switches on syntax highlighting:
 syntax enable
+
+" When set to "dark" or "light", adjusts the default color groups for that background type.  The
+" |TUI| or other UI sets this on startup (triggering |OptionSet|) if it can detect the background
+" color. This option does NOT change the background color, it tells Nvim what the "inherited"
+" (terminal/GUI) background looks like. See |:hi-normal| if you want to set the background color
+" explicitly.
 set background=dark
 colorscheme NeoSolarized
 
@@ -103,6 +115,7 @@ set shortmess+=I
 
 " }}}
 " backspace {{{2
+
 " make delete work sanely
 set backspace=indent,eol,start
 " }}}
@@ -130,7 +143,7 @@ set updatetime=100
 " echo winwidth(0) to get the length of the screen and devide by 2
 " Text width 79 if colorcolumn is set to 1 and there is no colorcolumn join.
 " Text width 80 if there is no colorcolumn set to 1
-set textwidth=101
+set textwidth=79
 
 " Set the column at the 80 +1 after textwidth
 set colorcolumn=+1
@@ -285,7 +298,7 @@ set fillchars=fold:━
 function! MyFoldText()
 	let line = getline(v:foldstart)
 	let foldedlinecount = v:foldend - v:foldstart
-	let separator = 102 - len(line)
+	let separator = 80 - len(line)
 
 	let line_end = foldedlinecount . ' ━ lines │ depth '
 	let line_separator = repeat('─', separator - len(line_end)+4)
@@ -311,6 +324,34 @@ set spellfile=~/.config/nvim/spell/custom-dictionary.utf-8.add
 
 " }}}
 " }}} end formatting
+" Completion {{{1
+
+" set the hight of the completion window
+set pumheight=20
+
+" set the with of the completion window
+set pumwidth=20
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Navigate snippet placeholders using tab
+let g:coc_snippet_next = '<Tab>'
+let g:coc_snippet_prev = '<S-Tab>'
+
+" Use enter to accept snippet expansion
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+
+" }}} end completion
 " History, ignore and tags {{{1
 " undo {{{2
 set history=1000
@@ -355,10 +396,15 @@ set wildignore+=*/.fdb*/,*/.toc,*/.out,*/.glo,*/.log,*/.ist,*/.fdb_latexmk
 set tags=tags;/
 
 " }}}
-" spell
-
+" spell {{{2
+"
+" }}}
 "}}} end history
 " Remaps {{{1
+" Resource {{{2
+nnoremap <leader>er :vsplit $MYVIMRC<cr>
+"
+" }}}
 " navigation {{{2
 " keep hands on the homerow
 inoremap jj <Esc>
@@ -430,32 +476,10 @@ set pastetoggle=<F1>
 nnoremap <leader><TAB> :set et! list!<CR>
 
 " }}}
-" Completion {{{2
-
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-" Navigate snippet placeholders using tab
-let g:coc_snippet_next = '<Tab>'
-let g:coc_snippet_prev = '<S-Tab>'
-
-" Use enter to accept snippet expansion
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
-
-" }}}
 " nerdtree {{{2
 " nnoremap <leader>x :NERDTreeToggle<CR>
 " }}}
-" coc {{{2
+" coc {{{2{{{
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -477,8 +501,12 @@ nnoremap <silent> <leader>a :CocList diagnostics<cr>
 nnoremap <silent> <leader>o :CocList outline<cr>
 nnoremap <silent> <leader>s :CocList -I symbols<cr>
 
-" }}}
+" <leader> rb is a refactor
+
+" }}}}}}
 " multi cursor {{{2
+
+" hi CocCursorRange
 
 " press control d to add the word to multicursor word for renameing
 nmap <expr> <silent> <C-d> <SID>select_current_word()
@@ -494,11 +522,26 @@ endfunc
 noremap <C-c> :CocCommand document.renameCurrentWord<cr>
 
 " }}}
+" date {{{2
+nnoremap <F5> "=strftime("%a, %b %e, %Y")<CR>P
+" }}}
 " }}} end remaps
 " commands and aug commands {{{1
 " commands {{{2
 
+" Fold current file
 command! -nargs=1 Fold :set foldlevel=<args>
+
+" Grep in file for Arg and open quickfix
+command -nargs=1 G vimgrep /\v<args>/g % | copen
+
+" Grep in all subdirectory files for Arg and open quickfix
+command -nargs=1 GG vimgrep /\v<args>/g **/* | copen
+
+
+silent! execute 'vimgrep /\<' .name. '\>' . '/' expand("$HOME")."/.notes/**/*"
+" Legal notes search
+command -nargs=1 L vimgrep /\v<args>/g ~/law/**/* | copen
 
 " Correct misspellings.
 command! -bang Q q<bang>
@@ -553,13 +596,14 @@ augroup END
 " set highlight insert line {{{3
 " set color of line
 autocmd InsertEnter * set cul
-autocmd InsertLeave * set nocul
+" autocmd InsertLeave * set nocul
 endif " has("autocmd")
 " }}}
 " }}}
 " }}}
-" functions {{{2
-" Number Toggle {{{3
+" functions {{{1
+" Number Toggle {{{2
+
 " when setting paste this would be good to remove.
 function! NumberToggle()
 	if(&relativenumber == 1)
@@ -575,8 +619,10 @@ function! NumberToggle()
 endfunction
 
 nnoremap <f2> :call NumberToggle()<CR>
+
 " }}}
-" open help on word {{{3
+" open help on word {{{2
+
 " show docs on things with K
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -589,12 +635,14 @@ endfunction
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 " }}}
-" note grep {{{3
+" note grep {{{2
+
 " Get the line and column. This is so the cursor can be returend to the line.
 " Search notes with vims built in grep. Use a word boundary to stop grep looking
 " for words inside words like todo - autodone. If the string is not empty and
 " the results of the search are not zero, open the quickfix and jump to first
 " match,
+
 function! NoteGreper()
 	let l = line(".")
 	let c = col(".")
@@ -616,8 +664,9 @@ function! NoteGreper()
 endfunction
 
 nnoremap <leader>n :call NoteGreper()<cr>
+
 " }}}
-" }}}
+" }}} end functions
 " vender plugins {{{1
 " coc {{{2
 
@@ -631,82 +680,42 @@ let g:coc_filetype_map = {
 
 " }}}
 " Custom Highlights {{{2
-" set runtimepath+=$HOME/.config/nvim/colors
+
 runtime ./colors/custom-highlight-colors.vim
 
 " }}}
-" indentLine {{{2
+" indent exclude {{{2
 
-" conceallevel
-"
-" 0	    Text is shown normally
-" 1	    Each block of concealed text is replaced with one character.  If the syntax item does not
-"       have a custom replacement character defined (see |:syn-cchar|) the character defined in
-"       'listchars' is used. It is highlighted with the "Conceal" highlight group.
-" 2	    Concealed text is completely hidden unless it has a custom replacement character defined.
-" 3	    Concealed text is completely hidden.
-"
-" set this so we wont break indentation plugin
-set conceallevel=2
+let g:indent_blankline_filetype_exclude = ['help', "checkhealth", "man", "md", "markdown", "txt"]
 
-" indentLine_enabled
-"
-" Specify whether to enable indentLine plugin by default. If value is not 0, the plugin is on by
-" default, otherwise off. Default value is 1.
-let g:indentLine_enabled = 1
+" }}}
+" raindow parenth {{{2
 
-" indentLine_char_list
-"
-" Specify a list of characters to be used as indent line for each indent level. If the value is an
-" empty list [], use |g:indentLine_char| instead. e.g., let g:indentLine_char_list = ['|', '¦', '┆',
-" '┊'] Default value is [].
-let g:indentLine_char_list = ['▏', '¦', '┆', '┊']
-
-" indentLine_color_term
-"
-" Specify terminal vim indent line color. e.g.  let g:indentLine_color_term = 239
-let g:indentLine_color_term = 239
-
-" indentLine_indentLevel
-"
-" Specify how much indent level do you want to use for indentLine. Most program will not has bigger
-" indent level than 10. Default value is 10.
-let g:indentLine_indentLevel = 5
-
-" indentLine_setColors
-"
-" By default, indentLine will overwrite 'conceal' color. If you want to highlight conceal with your
-" colorscheme, set this value to 0. Default value is 1.
-let g:indentLine_setColors = 0
-
-" indentLine_fileType
-"
-" This variable specify a list of file types. When opening these types of files, the plugin is
-" enabled by default. e.g. let g:indentLine_fileType = ['c', 'cpp'] Default value is [] which means
-" all file types is supported.
-let g:indentLine_fileType = ['json', 'html', 'ruby', 'rb', 'eruby', 'erb', 'css', 'scss', 'py']
-
-" indentLine_fileTypeExclude
-"
-" This variable specify a list of file types. When opening these types of files, the plugin is
-" disabled by default. e.g. let g:indentLine_fileTypeExclude = ['text', 'sh'] Default value is []
-" which means no file types are excluded.
-let g:indentLine_fileTypeExclude = ['text', 'txt', 'md', 'markdown', 'sh']
+let g:ada_rainbow_color = "true"
+let g:rainbow_active = 1
+let g:rainbow_ctermfgs = ['darkblue', 'darkgrey', 'darkmagenta', 'magenta']
 
 " }}}
 " }}}
-"=================================================================================
+" temp statusline {{{1
+
+" set up a basic statusline
+set statusline=
+set statusline+=%#PmenuSel#
+set statusline+=%#LineNr#
+set statusline+=\ %f
+set statusline+=%m
+set statusline+=%=
+set statusline+=%#CursorColumn#
+set statusline+=\ %y
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\[%{&fileformat}\]
+set statusline+=\ %p%%
+set statusline+=\ %l:%c
 
 
+" }}}
 
-
-
-
-
-
-
-
-
-
+let solirized_italics = 0
 
 

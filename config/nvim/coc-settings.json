@@ -143,6 +143,5 @@
     // snippets
     "snippets.snipmate.enable": true,
     "snippets.ultisnips.enable": false,
-    "suggest.snippetIndicator": "[+] ",
-    "coc.preferences.snippetStatusText": "Ⓢ "
+    "suggest.snippetIndicator": "[+] "
 }

@@ -9,7 +9,7 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall
 endif
 
-call plug#begin('~/.config/nvim/plugged/')
+call plug#begin('$XDG_DATA_HOME/plugged')
 
 "------------------------------------------------------------------------------
 " Git

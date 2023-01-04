@@ -41,12 +41,22 @@ fi
 export LANG='en_US.UTF-8'
 
 # }}}
+# config {{{1
+
+# you can have all your configuration files in $HOME/.config
+export XDG_CONFIG_HOME="$HOME/.config"
+
+# set the cache directory apps will look for
+export XDG_CACHE_HOME="$XDG_CONFIG_HOME/cache"
+
+# Neovim data directory shada,site,autoload,pluggins
+export XDG_DATA_HOME="$HOME/.local/share/nvim"
+
+# }}}
 # zsh {{{1
 
-# export XDG_CONFIG_HOME=$HOME/.config/
-#
-# zsh user home directory
-export ZSH=$HOME/.zsh
+# set the zsh directory
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
 # }}}
 # homebrew {{{1
@@ -107,11 +117,6 @@ fi
 # man page piped to vim
 export MANPAGER='nvim +Man!'
 export MANWIDTH=999
-
-# }}}
-# mpv home {{{1
-
-export MPV_HOME="$HOME/.config/mpv"
 
 # }}}
 # misc {{{!

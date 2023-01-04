@@ -18,3 +18,8 @@
 
 # format the title string replacing space with underscores
 --replace-in-metadata "title,uploader" "[ _]" "-"
+
+# Location in the filesystem where yt-dlp can store some downloaded information
+# (such as client ids and signatures) permanently. By default
+# ${XDG_CACHE_HOME}/yt-dlp
+--cache-dir "${XDG_CACHE_HOME}/yt-dlp"

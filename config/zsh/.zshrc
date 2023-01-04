@@ -248,7 +248,7 @@ chpwd() {
 HISTSIZE=50000
 SAVEHIST=50000
 HIST_STAMPS="dd/mm/yyyy"
-HISTFILE="$HOME/.cache/zsh/zsh_history.txt"
+HISTFILE="$XDG_CACHE_HOME/zsh/zsh_history.txt"
 HISTORY_IGNORE="(pwd|less *|l[alsh]#( *)#|[bf]g *|exit|reset|clear)"
 
 # APPEND_HISTORY <D>
@@ -374,7 +374,7 @@ autoload -Uz add-zsh-hook
 #
 # configure the dirstack file location
 #
-DIRSTACKFILE="$HOME/.cache/zsh/recent_dirs.txt"
+DIRSTACKFILE="$XDG_CACHE_HOME/zsh/recent_dirs.txt"
 
 # Eval if the DIRSTACKFILE exists and add the new dir change to it
 if [[ -f "$DIRSTACKFILE" ]] && (( ${#dirstack} == 0 )); then
@@ -554,6 +554,8 @@ if [[ -f $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.
 fi
 
 # source aliases
-source $ZDOTDIR/zsh_aliases
+if [[ -f $ZDOTDIR/.zsh_aliases ]]; then
+    source $ZDOTDIR/.zsh_aliases
+fi
 
 # }}}

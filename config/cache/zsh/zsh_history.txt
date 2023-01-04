@@ -25491,3 +25491,8 @@ f color
 : 1672840721:0;g push
 : 1672840726:0;g st
 : 1672840863:0;g acm "ADDED: restructure removed from config and added to $XDG_DATA_HOME"
+: 1672840867:0;g st
+: 1672840884:0;g push
+: 1672841031:0;finder
+: 1672841164:0;g st
+: 1672841211:0;g acm "REMOVED: zsh now lives in the config. Viminfo stored in old vim dir"

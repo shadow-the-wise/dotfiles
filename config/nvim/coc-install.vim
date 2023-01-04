@@ -9,4 +9,5 @@ let g:coc_global_extensions = [
     \ 'coc-pairs',
     \ 'coc-highlight',
     \ 'coc-diagnostic',
+    \ 'coc-prettier',
   \ ]

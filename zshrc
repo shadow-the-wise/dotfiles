@@ -19,14 +19,25 @@
 # autocd without the cd command
 setopt autocd
 
+# -----------------------------------------------------------------------------
+# CD Path
+# -----------------------------------------------------------------------------
 cdpath=(~)
 
-# LONGLISTJOBS
-#
+# -----------------------------------------------------------------------------
+# Named Dirs
+# -----------------------------------------------------------------------------
+# hash -d nvim=$HOME/.config/nvim
+# hash -d projects=$HOME/Code/Ruby/Projects
+# hash -d sites=$HOME/Sites
+
 # automatically remove duplicates from these arrays
 # typeset -U path cdpath fpath manpath
 
+# LONGLISTJOBS
+#
 # display PID when suspending processes as well
+#
 setopt longlistjobs
 
 # RM_STAR_WAIT

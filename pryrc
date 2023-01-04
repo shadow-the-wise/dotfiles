@@ -44,7 +44,7 @@ end
 
 # config {{{1
 #------------------------------------------------------------------------------
-Pry.config.editor = "vim"
+Pry.config.editor = "nvim"
 
 Pry.config.pager = false
 

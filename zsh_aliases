@@ -1,11 +1,14 @@
 #==============================================================================
 # Version: 2.0
 # Author: Shadow
-# Last Update: Saturday, 22 May, 2021,  3:53 PM
+# Last Update: mon 2 jan 2023
 #==============================================================================
 # Zsh Aliases
 #==============================================================================
 # globals {{{1
+#
+# Global variables let the user alias unix programs. Typicaly somthing is being
+# passed to the alias (hence the proceeding pipe).
 
 alias -g G='| grep'
 alias -g C='| wc -l'
@@ -18,38 +21,84 @@ alias -g A='| awk'
 
 # }}}
 # ls {{{1
-#-------------------------------------------------------------------------------
-# List files/directories
-#-------------------------------------------------------------------------------
-# list dirs and dotfiles
-# l=list all information
-# A=loose the . / .. directories
-# s=sort by size but keep alphabetical order
 
-#alias l="ls -lAs"
-#alias l='colorls -lA --sd --gs'
-#alias ll='colorls -l --sd --gs'
-#alias tree='colorls --tree'
-alias l='ls -la'
+# - a
+# All files (and hidden files)
+#
+# -h
+# Human readable
+#
+# -l
+# The lowercase letter, List files in the long format.
+#
+# ls
+# List directories
+#
+alias l='ls -hla'
+
+# -h
+# Human readable
+#
+# -l
+# The lowercase letter, List files in the long format.
+#
+# ls
+# List directories
+#
+alias ll='ls -hl'
+
+# The tree is a tiny, cross-platform command-line program used to recursively
+# list or display the content of a directory
+#
+alias tree='tree -C --dirsfirst'
+
+# }}}
+# Remove File {{{1
+
+#  -I
+#  Request confirmation once if more than three files are being removed or if a
+#  directory is being recursively removed. This is a far less intrusive option
+#  than -i  yet provides almost the same level of protection against mistakes.
+#
+alias rm="rm -I"
 
 # }}}
 # Editor {{{1
 
-alias v="$EDITOR"                           # use the env var $EDITOR, vim
-alias vs="$EDITOR -S"                       # open as session
+# The editor variable is set in .zshenv. This is a global editor variable and
+# is set to neovim text editor.
+#
+alias v="$EDITOR"
+
+# Open neovim with the session flag
+#
+alias vs="$EDITOR -S"
 
 # }}}
 # grep {{{1
 
-# color grep
+# --color[=WHEN], --colour[=WHEN]
+#
+# Surround the matched (non-empty) strings, matching lines, context lines, file
+# names, line numbers, byte offsets, and separators (for fields and groups of
+# context lines) with escape sequences to display them in color on the terminal.
+#
+# grep - Grep searches for PATTERNS in each FILE.
+#
 alias grep="grep --color=auto"
 
 # }}}
 # history {{{1
 
-# history
+# -i 1
+#
+# -1
+#
+# Command line history file with sensible settings
+#
 alias history="history -i 1 -1"
-# history
+
+# Alias history to h
 alias h="history"
 
 # }}}
@@ -57,38 +106,45 @@ alias h="history"
 
 # opens finder in $PWD
 alias finder='open .'
-# reveal hidden files
+
+# reveal hidden files in the directory
 alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
-# hide hidden files
+
+# hide hidden files in the directory
 alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
 
 # }}}
-# Misc {{{1
+# jobs {{{1
 
-alias t="touch"                             # create a new file
-alias j="jobs -l"                           # jobs
-alias get="curl -O -L"                      # curl aliased to get
-alias rc="rails c"                          # rails console
-alias td="v $(find ~/.notes/todo.md)"       # todo
-alias za="v $(find ~/.zsh_aliases)"         # zsh aliases
-alias c_last="fc -l -1 | cut -d\  -f3- | pbcopy"    # copy last command to clip
-alias d_sizes="df -H"                        # show disc space
+# -l
+# Provide more information about each job listed.
+#
+# jobs — display status of jobs in the current session
+#
+alias j="jobs -l"
 
 # }}}
-# qutebrowser {{{1
+# shortcuts {{{1
 
-# qute browser
-alias qb="open /Applications/qutebrowser.app"
+# todo
+# open the todo file using a function that is only evaluated when its called.
+#
+alias td="v $(find ~/.notes/todo.md)"
 
-# }}}
-# mpv {{{1
-
-alias m_plist="mpv ~/Downloads/Movies/**"
-alias m_audio="mpv ~/Music/YoutubeMusic/**"
-alias m_img="mpv ~/Downloads/Images/**"
+# zsh aliases
+# open the zsh aliases file using a function that is only evaluated when its
+# called.
+#
+alias za="v $(find ~/.zsh_aliases)"
 
 # }}}
 # suffix {{{1
+#
+# Suffix Aliases are defined using the -s flag. With suffix aliases, you can
+# launch files with a specific extension (or suffix) using your favorite tool.
+# To register a suffix alias, we use the alias -s extension=name-of-the-tool
+# pattern.
+
 # text and programing
 alias -s txt="$EDITOR"
 alias -s md="$EDITOR"
@@ -114,15 +170,32 @@ alias -s eac3="open"
 alias -s movi="open"
 alias -s caf="open"
 alias -s aiff="open"
+
 # }}}
 # dir stack {{{1
 #-------------------------------------------------------------------------------
 
-# print the stack.
-alias d='dirs -v | head -10'
-alias po='popd'
+# Zsh can be configured to remember the DIRSTACKSIZE last visited folders. This
+# can then be used to cd them very quickly. You need to add some lines to your
+# configuration file.
+#
+# The dirstack size is set in .zshrc and and defaults to 50.
+#
+# HEAD is used to trim the first 20 results.
+#
+alias d='dirs -v | head -20'
+
+# push a directory to the stack. This is silently used everytime a directory is
+# changed using the change present working directory zsh function chpwd
+#
 alias pu='pushd'
 
+# Is theoreticaly used to remove things from the stack.
+alias po='popd'
+
+# use the numbers to cd to the directories in the stack. This adds the new
+# choice to the top of the stack.
+#
 alias 1='cd +1'
 alias 2='cd +2'
 alias 3='cd +3'
@@ -132,76 +205,76 @@ alias 6='cd +6'
 alias 7='cd +7'
 alias 8='cd +8'
 alias 9='cd +9'
+alias 10='cd +10'
+alias 11='cd +11'
+alias 12='cd +12'
+alias 13='cd +13'
+alias 14='cd +14'
+alias 15='cd +15'
+alias 16='cd +16'
+alias 17='cd +17'
+alias 18='cd +18'
+alias 19='cd +19'
+alias 20='cd +20'
+
 
 # }}}
-# counts and files {{{1
+# counts {{{1
 
-alias wordy='wc -w * | sort '               # sort files in current directory by the number of words they contain
-alias du='du -h -c'                         # Calculate total disk usage for a folder
+# topten commands
 alias topten="history | commands | sort -rn | head"
-alias dup="duplicates"                      # two file list dups
-alias ndup="nduplicate"                     # two file list none dups
+
+# sort files in current directory by the number of words they contain
+alias wordy='wc -w * | sort '
+
+# Calculate total disk usage for a folder
+alias du='du -h -c'
+
+# show disc space
+alias d_sizes="df -H"
+
+# }}}
+# duplicates {{{1
+
+# dup <file1> <file2>
+#
+# Compare two files and find duplicates.
+#
+alias dup="duplicates"
+
+# ndup <file1> <file2>
+#
+# Compare two files and find none duplicates.
+#
+alias ndup="nduplicate"
 
 # alias tasks='grep --exclude-dir=.git -rEI "TODO|FIXME|NOTE" . 2>/dev/null'
 
 # }}}
 # git {{{1
-# main git {{{2
-alias g='git'
-# }}}
-# add, commit, status {{{2
-alias ga='g a'                          # git add changes
-alias gaa='g aa'                        # git add changes
-alias gs='g st'                         # git status
-alias gcm='g cm'                        # git commit -message
-alias gacm='g acm'                      # git add commit -message
-alias gu='g up'                         # pulls from remote, rebase local commits.
-# }}}
-# branches {{{2
-alias gco='g co'                        # git check out
-alias gcob='g cob'                      # git check out branch
-alias gcol='g col'                      # git check out last branch
-# }}}
-# display branches {{{2
-alias gbl='g bl'                        # git branch local
-alias gbr='g br'                        # git branch remote
-# }}}
-# push {{{2
-alias gp='g push'                       # git push
-alias gpm='g psuom'                     # git push -u origin master
-# }}}
-# log {{{2
-alias gl='g l'                          # git log short
-alias gll='g la'                        # git log long
-# }}}
-# status {{{2
-alias gn='g new'                        # git new commits
-alias gsh='g sh'                        # git show head additions and deletions
-# }}}
-# diff {{{2
-alias gd='g diff'                       # git diff
-# }}}
-# un {{{2
-alias gund='g undo'                     # git undo
-alias guns='g unstage'                  # git unstage
-alias gunc='g uncommit'                 # git unstage
-# }}}
-# update {{{2
-alias gru='g update'                    # git remote update - get remote comits
-# }}}
-# }}}
-# Ruby scripts {{{1
 
-alias ginit="ruby ~/.bin/Git-Scripts/git_init.rb"          # init a git repo local and remote
-alias lyric="ruby $HOME/.bin/lyrics.rb"                 # find lyrics
-alias remove-playlist="ruby $HOME/.bin/Download-Scripts/remove-playlist.rb"
+# Alias the git command to a single letter
+alias g='git'
 
 # }}}
 # resource {{{1
 
+# Edit resource file for nvim
 alias vr="$EDITOR $HOME/.config/nvim/init.vim"
+
+# Edit resource file for zsh
 alias zr="$EDITOR $HOME/.zshrc"
 
+# }}}
+# Misc {{{1
+
+# curl aliased to get
+alias get="curl -O -L"
+
+# rails console
+alias rc="rails c"
+
+alias c_last="fc -l -1 | cut -d\  -f3- | pbcopy"    # copy last command to clip
 # }}}
 # old function {{{1
 

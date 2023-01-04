@@ -1,0 +1,27 @@
+{
+    "printWidth": 80,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "useTabs": true,
+    "semi": false,
+    "singleQuote": false,
+    "bracketSameLine": true,
+    "bracketSpacing": true,
+    "proseWrap": "preserve",
+    "endOfLine": "lf",
+    "singleAttributePerLine": false,
+    "htmlWhitespaceSensitivity": "css",
+    "vueIndentScriptAndStyle": false,
+    "embeddedLanguageFormatting": "off",
+    "overrides": [
+        {
+            "files": [
+                "*.html",
+                "*.html.erb"
+            ],
+            "options": {
+                "printWidth": 140
+            }
+        }
+    ]
+}

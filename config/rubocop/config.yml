@@ -5,33 +5,34 @@ require:
     - rubocop-rails
 
 AllCops:
-    TargetRubyVersion: 3.0
+    TargetRubyVersion: 2.7
     # RuboCop has a bunch of cops enabled by default. This setting tells RuboCop
     # to ignore them, so only the ones explicitly set in this file are enabled.
     DisabledByDefault: true
     SuggestExtensions: false
     Exclude:
-        - '**/tmp/**/*'
-        - '**/templates/**/*'
-        - '**/vendor/**/*'
-        - 'actionpack/lib/action_dispatch/journey/parser.rb'
-        - 'actionmailbox/test/dummy/**/*'
-        - 'actiontext/test/dummy/**/*'
-        - '**/node_modules/**/*'
+        - "**/tmp/**/*"
+        - "**/templates/**/*"
+        - "**/vendor/**/*"
+        - "actionpack/lib/action_dispatch/journey/parser.rb"
+        - "actionmailbox/test/dummy/**/*"
+        - "actiontext/test/dummy/**/*"
+        - "**/node_modules/**/*"
+    MaxFilesInCache: 15
 
 Performance:
     Exclude:
-        - '**/test/**/*'
+        - "**/test/**/*"
 
 # Prefer assert_not over assert !
 Rails/AssertNot:
     Include:
-        - '**/test/**/*'
+        - "**/test/**/*"
 
 # Prefer assert_not_x over refute_x
 Rails/RefuteMethods:
     Include:
-        - '**/test/**/*'
+        - "**/test/**/*"
 
 Rails/IndexBy:
     Enabled: true
@@ -150,14 +151,14 @@ Style/FrozenStringLiteralComment:
     Enabled: true
     EnforcedStyle: always
     Exclude:
-        - 'actionview/test/**/*.builder'
-        - 'actionview/test/**/*.ruby'
-        - 'actionpack/test/**/*.builder'
-        - 'actionpack/test/**/*.ruby'
-        - 'activestorage/db/migrate/**/*.rb'
-        - 'activestorage/db/update_migrate/**/*.rb'
-        - 'actionmailbox/db/migrate/**/*.rb'
-        - 'actiontext/db/migrate/**/*.rb'
+        - "actionview/test/**/*.builder"
+        - "actionview/test/**/*.ruby"
+        - "actionpack/test/**/*.builder"
+        - "actionpack/test/**/*.ruby"
+        - "activestorage/db/migrate/**/*.rb"
+        - "activestorage/db/update_migrate/**/*.rb"
+        - "actionmailbox/db/migrate/**/*.rb"
+        - "actiontext/db/migrate/**/*.rb"
 
 Style/RedundantFreeze:
     Enabled: true

@@ -43,6 +43,8 @@ export LANG='en_US.UTF-8'
 # }}}
 # zsh {{{1
 
+# export XDG_CONFIG_HOME=$HOME/.config/
+#
 # zsh user home directory
 export ZSH=$HOME/.zsh
 
